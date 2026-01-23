@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Barbearia Vintage - Corte & Estilo</title>
+    <meta name="description" content="Barbearia especializada em cortes masculinos, barba e cuidados para homens">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Slab:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Botão WhatsApp Flutuante -->
+    <a href="https://wa.me/5511999999999?text=Olá! Gostaria de agendar um horário" class="whatsapp-float" target="_blank" aria-label="Fale conosco no WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Cabeçalho -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-cut"></i>
+                <div class="logo-text">
+                    <h1>Barbearia <span>Vintage</span></h1>
+                    <p class="logo-subtitle">Corte & Estilo</p>
+                </div>
+            </div>
+            
+            <nav class="navbar">
+                <ul class="nav-links">
+                    <li><a href="#home" class="nav-link active">Início</a></li>
+                    <li><a href="#servicos" class="nav-link">Serviços</a></li>
+                    <li><a href="#sobre" class="nav-link">Sobre</a></li>
+                    <li><a href="#galeria" class="nav-link">Galeria</a></li>
+                    <li><a href="#contato" class="nav-link">Contato</a></li>
+                </ul>
+                
+                <div class="mobile-menu-btn">
+                    <div class="hamburger" id="hamburger">
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                    </div>
+                </div>
+            </nav>
+            
+            <button class="btn-agendar" id="btn-agendar-header">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Agendar</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Seção Hero (ATUALIZADA com redes sociais) -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h2 class="hero-title">Estilo Clássico para o <span class="highlight">Homem Moderno</span></h2>
+                    <p class="hero-description">Cortes de cabelo e barba com precisão, em um ambiente exclusivo para homens que valorizam tradição e qualidade.</p>
+                    <div class="hero-buttons">
+                        <a href="#contato" class="btn-hero btn-primary">
+                            <i class="fas fa-calendar-check"></i>
+                            Agendar Agora
+                        </a>
+                        <a href="#servicos" class="btn-hero btn-secondary">
+                            <i class="fas fa-cut"></i>
+                            Ver Serviços
+                        </a>
+                    </div>
+                    
+                    <!-- Redes Sociais adicionadas aqui -->
+                    <div class="footer-col hero-social">
+                        <h3>Redes Sociais</h3>
+                        <div class="footer-social">
+                            <a href="#" class="social-icon" aria-label="Facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="social-icon" aria-label="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="social-icon" aria-label="WhatsApp">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                            <a href="#" class="social-icon" aria-label="Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="image-container">
+                        <img src="imagens/ChatGPT Image 23 de jan. de 2026, 14_10_19.png" alt="Barbeiro trabalhando" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Serviços -->
+    <section id="servicos" class="servicos">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Nossos Serviços</h2>
+                <p class="section-subtitle">Oferecemos uma experiência completa de cuidado masculino</p>
+            </div>
+            
+            <div class="servicos-grid">
+                <div class="servico-card">
+                    <div class="servico-icon">
+                          <i class="fas fa-scissors"></i>   
+                    </div>
+                    <h3>Corte de Cabelo</h3>
+                    <p>Corte com tesoura, máquina ou estilo fade, realizado por nossos especialistas.</p>
+                    <div class="servico-footer">
+                        <span class="preco">R$ 35,00</span>
+                        <span class="tempo"><i class="fas fa-clock"></i> 40 min</span>
+                    </div>
+                    <button class="btn-servico" data-servico="Corte de Cabelo">Agendar</button>
+                </div>
+                
+                <div class="servico-card">
+                    <div class="servico-icon">
+                        <i class="fas fa-air-freshener"></i>
+                    </div>
+                    <h3>Barba</h3>
+                    <p>Modelagem e tratamento completo da barba com produtos premium.</p>
+                    <div class="servico-footer">
+                        <span class="preco">R$ 25,00</span>
+                        <span class="tempo"><i class="fas fa-clock"></i> 30 min</span>
+                    </div>
+                    <button class="btn-servico" data-servico="Barba">Agendar</button>
+                </div>
+                
+                <div class="servico-card">
+                    <div class="servico-icon">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <h3>Combo Completo</h3>
+                    <p>Corte de cabelo + barba + hidratação. O pacote ideal para revitalização.</p>
+                    <div class="servico-footer">
+                        <span class="preco">R$ 50,00</span>
+                        <span class="tempo"><i class="fas fa-clock"></i> 1h 10 min</span>
+                    </div>
+                    <button class="btn-servico" data-servico="Combo Completo">Agendar</button>
+                </div>
+                
+                <div class="servico-card">
+                    <div class="servico-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Estilo Executivo</h3>
+                    <p>Corte premium com massagem relaxante e finalização profissional.</p>
+                    <div class="servico-footer">
+                        <span class="preco">R$ 60,00</span>
+                        <span class="tempo"><i class="fas fa-clock"></i> 1h 30 min</span>
+                    </div>
+                    <button class="btn-servico" data-servico="Estilo Executivo">Agendar</button>
+                </div>
+
+                <div class="servico-card">
+                    <div class="servico-icon">
+                        <i class="fas fa-cut"></i>
+                    </div>
+                    <h3>Sombrancelha e Pezinho </h3>
+                    <p>Retoque e Desing </p>
+                    <div class="servico-footer">
+                        <span class="preco">R$ 60,00</span>
+                        <span class="tempo"><i class="fas fa-clock"></i> 15 min</span>
+                    </div>
+                    <button class="btn-servico" data-servico="Estilo Executivo">Agendar</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Sobre -->
+    <section id="sobre" class="sobre">
+        <div class="container">
+            <div class="sobre-content">
+                <div class="sobre-imagem">
+                    <div class="image-frame">
+                        <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Interior da barbearia" loading="lazy">
+                        <div class="experience-badge">
+                            <span>12+</span>
+                            <small>Anos de Experiência</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sobre-texto">
+                    <h2 class="section-title">Sobre a <span class="highlight">Barbearia Vintage</span></h2>
+                    <p>Fundada em 2010, a Barbearia Vintage nasceu com a missão de resgatar a tradição das barbearias clássicas, combinando técnicas tradicionais com tendências contemporâneas.</p>
+                    <p>Nosso espaço foi cuidadosamente projetado para oferecer conforto e exclusividade, com atmosfera retrô e atendimento personalizado.</p>
+                    
+                    <div class="sobre-info">
+                        <div class="info-item">
+                            <i class="fas fa-users"></i>
+                            <div>
+                                <h3>+5.000</h3>
+                                <p>Clientes Satisfeitos</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fas fa-award"></i>
+                            <div>
+                                <h3>Barbeiros Certificados</h3>
+                                <p>Profissionais Qualificados</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fas fa-thumbs-up"></i>
+                            <div>
+                                <h3>100%</h3>
+                                <p>Satisfação Garantida</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sobre-features">
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Ambiente climatizado</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Produtos premium</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Estacionamento gratuito</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Wi-Fi de alta velocidade</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Galeria -->
+    <section id="galeria" class="galeria">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Nossa Galeria</h2>
+                <p class="section-subtitle">Veja alguns dos nossos trabalhos e ambiente</p>
+            </div>
+            
+            <div class="galeria-grid">
+                <div class="galeria-item">
+                    <img src="imagens/man-barbershop-salon-doing-haircut-beard-trim.jpg" alt="Corte de cabelo" loading="lazy">
+                    <div class="galeria-overlay">
+                        <span>Corte Moderno</span>
+                    </div>
+                </div>
+                <div class="galeria-item">
+                    <img src="https://cdn.shopify.com/s/files/1/0408/8473/files/como-aparar-a-barba-02.jpg?v=1517856882" alt="Barba sendo feita" loading="lazy">
+                    <div class="galeria-overlay">
+                        <span>Barba Detalhada</span>
+                    </div>
+                </div>
+                <div class="galeria-item">
+                    <img src="imagens/barbearia-1_975681-299114.jpg" alt="Interior da barbearia" loading="lazy">
+                    <div class="galeria-overlay">
+                        <span>Nosso Ambiente</span>
+                    </div>
+                </div>
+                <div class="galeria-item">
+                    <img src="imagens/kit-de-barbear-para-homens-em-superficies-escuras_885257-2762.jpg" alt="Produtos para barba" loading="lazy">
+                    <div class="galeria-overlay">
+                        <span>Produtos Premium</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Seção Contato -->
+<section id="contato" class="contato">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Entre em Contato</h2>
+            <p class="section-subtitle">Agende seu horário ou tire suas dúvidas conosco</p>
+        </div>
+        
+        <div class="contato-content">
+            <div class="contato-info">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="info-text">
+                        <h3>Endereço</h3>
+                        <p>Rua das Barbearias, 123 - Centro</p>
+                        <p>São Paulo - SP, 01234-567</p>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="info-text">
+                        <h3>Telefone</h3>
+                        <p>(11) 99999-9999</p>
+                        <p>(11) 98888-8888</p>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="info-text">
+                        <h3>Horário de Funcionamento</h3>
+                        <p>Segunda a Sábado: 9h às 20h</p>
+                        <p>Domingo: 10h às 16h</p>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="info-text">
+                        <h3>Nossos Barbeiros</h3>
+                        <p>Carlos - Especialista em Corte</p>
+                        <p>Marcos - Mestre em Barba</p>
+                        <p>Ricardo - Estilo Executivo</p>
+                    </div>
+                </div>
+                
+                <div class="mapa">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.196830833479!2d-46.65390512437533!3d-23.56140217880026!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce59c8da0aa315%3A0xd59f9431f2c9776a!2sAv.%20Paulista%2C%20S%C3%A3o%20Paulo%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1684788436378!5m2!1spt-BR!2sbr" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Localização da Barbearia">
+                    </iframe>
+                </div>
+            </div>
+            
+            <div class="contato-form">
+                <div class="form-header">
+                    <h3><i class="fas fa-calendar-alt"></i> Agende seu Horário</h3>
+                    <p>Preencha o formulário e entraremos em contato</p>
+                </div>
+                
+                <form id="form-agendamento">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nome"><i class="fas fa-user"></i> Nome Completo</label>
+                            <input type="text" id="nome" placeholder="Digite seu nome" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="telefone"><i class="fas fa-phone"></i> Telefone</label>
+                            <input type="tel" id="telefone" placeholder="(11) 99999-9999" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email"><i class="fas fa-envelope"></i> E-mail (opcional)</label>
+                            <input type="email" id="email" placeholder="seu@email.com (opcional)">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="servico"><i class="fas fa-cut"></i> Serviço</label>
+                            <select id="servico" required>
+                                <option value="" disabled selected>Selecione um serviço</option>
+                                <option value="corte">Corte de Cabelo - R$ 35,00</option>
+                                <option value="barba">Barba - R$ 25,00</option>
+                                <option value="combo">Combo Completo - R$ 50,00</option>
+                                <option value="executivo">Estilo Executivo - R$ 60,00</option>
+                                <option value="sobrancelha">Sombrancelha e Pezinho - R$ 60,00</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="data"><i class="fas fa-calendar-day"></i> Data</label>
+                            <input type="date" id="data" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="hora"><i class="fas fa-clock"></i> Horário Preferencial</label>
+                            <select id="hora" required>
+                                <option value="" disabled selected>Selecione um horário</option>
+                                <option value="09:00">09:00</option>
+                                <option value="10:00">10:00</option>
+                                <option value="11:00">11:00</option>
+                                <option value="14:00">14:00</option>
+                                <option value="15:00">15:00</option>
+                                <option value="16:00">16:00</option>
+                                <option value="17:00">17:00</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="barbeiro"><i class="fas fa-user-tie"></i> Escolha o Barbeiro</label>
+                            <select id="barbeiro" required>
+                                <option value="" disabled selected>Selecione um barbeiro</option>
+                                <option value="carlos">Carlos - Especialista em Corte</option>
+                                <option value="marcos">Marcos - Mestre em Barba</option>
+                                <option value="ricardo">Ricardo - Estilo Executivo</option>
+                                <option value="qualquer">Qualquer barbeiro disponível</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="preferencia"><i class="fas fa-star"></i> Preferência de Corte</label>
+                            <select id="preferencia">
+                                <option value="" selected>Estilo preferido (opcional)</option>
+                                <option value="moderno">Corte Moderno</option>
+                                <option value="classico">Corte Clássico</option>
+                                <option value="degrade">Degradê</option>
+                                <option value="social">Social</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mensagem"><i class="fas fa-comment"></i> Mensagem (opcional)</label>
+                        <textarea id="mensagem" placeholder="Alguma observação especial ou instruções para o corte..." rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-notice">
+                        <i class="fas fa-info-circle"></i>
+                        <small>O e-mail é opcional. Usaremos apenas para confirmação do agendamento.</small>
+                    </div>
+                    
+                    <button type="submit" class="btn-form">
+                        <i class="fas fa-paper-plane"></i>
+                        Enviar Agendamento
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Rodapé -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <i class="fas fa-cut"></i>
+                        <div>
+                            <h2>Barbearia <span>Vintage</span></h2>
+                            <p>Estilo, tradição e qualidade desde 2010</p>
+                        </div>
+                    </div>
+                    <p class="footer-description">Especializados em cortes masculinos, barba e cuidados para homens que valorizam aparência e bem-estar.</p>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Links Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">Início</a></li>
+                        <li><a href="#servicos">Serviços</a></li>
+                        <li><a href="#sobre">Sobre</a></li>
+                        <li><a href="#galeria">Galeria</a></li>
+                        <li><a href="#contato">Contato</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Horários</h3>
+                    <ul class="footer-hours">
+                        <li>Segunda - Sexta: <span>9h - 20h</span></li>
+                        <li>Sábado: <span>9h - 20h</span></li>
+                        <li>Domingo: <span>10h - 16h</span></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Redes Sociais</h3>
+                    <div class="footer-social">
+                        <a href="#" class="social-icon" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="social-icon" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="footer-newsletter">
+                        <h4>Receba nossas ofertas</h4>
+                        <form id="form-newsletter">
+                            <input type="email" placeholder="Seu e-mail" required>
+                            <button type="submit" aria-label="Assinar newsletter">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; <span id="current-year"></span> Barbearia Vintage. Todos os direitos reservados.</p>
+                <p class="footer-dev">Desenvolvido com <i class="fas fa-heart"></i> para amantes da barbearia</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal de confirmação SIMPLIFICADO -->
+    <div class="modal" id="modal-confirmacao">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Agendamento Confirmado!</h3>
+            <div class="modal-actions">
+                <button class="btn-modal btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
