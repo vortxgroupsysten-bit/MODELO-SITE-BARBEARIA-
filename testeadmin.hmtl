@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin - Agendamentos</title>
+  <style>
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f4f4f4; }
+  </style>
+</head>
+<body>
+  <h1>Agendamentos Recebidos</h1>
+  <table id="tabela-agendamentos">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Telefone</th>
+        <th>Serviço</th>
+        <th>Data</th>
+        <th>Hora</th>
+        <th>Barbeiro</th>
+      </tr>
+    </thead>
+    <tbody id="lista-agendamentos">
+      <!-- Os dados serão inseridos aqui pelo JavaScript -->
+    </tbody>
+  </table>
+
+  <script type="module">
+    // Importa o Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+    // Sua configuração (mesma do formulário)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBl6ioGGktZLLdpXnT0TsRXzYPerI869xk",
+      authDomain: "agendamento-barbearia-a3080.firebaseapp.com",
+      projectId: "agendamento-barbearia-a3080",
+      storageBucket: "agendamento-barbearia-a3080.firebasestorage.app",
+      messagingSenderId: "464753245913",
+      appId: "1:464753245913:web:b2cf1c0ccefa4650c5408c8",
+      measurementId: "G-MEBPCBP312"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Função para carregar os agendamentos
+    async function carregarAgendamentos() {
+      const tbody = document.getElementById('lista-agendamentos');
+      tbody.innerHTML = '<tr><td colspan="6">Carregando...</td></tr>';
+
+      try {
+        // Busca todos os documentos da coleção "agendamentos", ordenados por data/hora
+        const q = query(collection(db, "agendamentos"), orderBy("timestamp", "desc"));
+        const querySnapshot = await getDocs(q);
+
+        tbody.innerHTML = ''; // Limpa a mensagem de carregamento
+
+        if (querySnapshot.empty) {
+          tbody.innerHTML = '<tr><td colspan="6">Nenhum agendamento encontrado.</td></tr>';
+          return;
+        }
+
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${data.nome || '—'}</td>
+            <td>${data.telefone || '—'}</td>
+            <td>${data.servico || '—'}</td>
+            <td>${data.data || '—'}</td>
+            <td>${data.hora || '—'}</td>
+            <td>${data.barbeiro || '—'}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Erro ao carregar agendamentos:", error);
+        tbody.innerHTML = '<tr><td colspan="6">Erro ao carregar dados.</td></tr>';
+      }
+    }
+
+    // Carrega ao abrir a página
+    carregarAgendamentos();
+  </script>
+</body>
+</html>
