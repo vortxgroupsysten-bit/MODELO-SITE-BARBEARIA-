@@ -538,6 +538,86 @@
         <div class="spinner"></div>
     </div>
 
+<!-- Conexão com o banco de dados -->
+
+    
+<!-- Banco de dados firebase, primeiro teste-->
+
+<!--  -->    
+
+    <script type="module">
+  // Importa o Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+  // Configuração do seu projeto Firebase (já copiada da sua imagem)
+  const firebaseConfig = {
+    apiKey: "AIzaSyBl6ioGGktZLLdpXnT0TsRXzYPerI869xk",
+    authDomain: "agendamento-barbearia-a3080.firebaseapp.com",
+    projectId: "agendamento-barbearia-a3080",
+    storageBucket: "agendamento-barbearia-a3080.firebasestorage.app",
+    messagingSenderId: "464753245913",
+    appId: "1:464753245913:web:b2cf1c0ccefa4650c5408c8",
+    measurementId: "G-MEBPCBP312"
+  };
+
+  // Inicializa o Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Escuta o envio do formulário
+  document.getElementById('form-agendamento').addEventListener('submit', async (e) => {
+    e.preventDefault(); // Impede o envio padrão
+
+    // Coleta os valores dos campos
+    const nome = document.getElementById('nome').value;
+    const telefone = document.getElementById('telefone').value;
+    const email = document.getElementById('email').value || null;
+    const servico = document.getElementById('servico').value;
+    const data = document.getElementById('data').value;
+    const hora = document.getElementById('hora').value;
+    const barbeiro = document.getElementById('barbeiro').value;
+    const preferencia = document.getElementById('preferencia').value || null;
+    const mensagem = document.getElementById('mensagem').value || null;
+
+    // Validação básica (opcional, mas recomendada)
+    if (!nome || !telefone || !servico || !data || !hora || !barbeiro) {
+      alert("Por favor, preencha todos os campos obrigatórios.");
+      return;
+    }
+
+    try {
+      // Envia os dados para o Firestore
+      await addDoc(collection(db, "agendamentos"), {
+        nome,
+        telefone,
+        email,
+        servico,
+        data,
+        hora,
+        barbeiro,
+        preferencia,
+        mensagem,
+        timestamp: new Date()
+      });
+
+      // Mensagem de sucesso
+      alert("✅ Agendamento enviado com sucesso! Entraremos em contato em breve.");
+      
+      // Limpa o formulário
+      document.getElementById('form-agendamento').reset();
+    } catch (error) {
+      console.error("Erro ao salvar agendamento:", error);
+      alert("❌ Ocorreu um erro ao enviar seu agendamento. Tente novamente mais tarde.");
+    }
+  });
+</script>
+
+    
+
+
+    
     <script src="script.js"></script>
 </body>
+
 </html>
