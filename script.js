@@ -403,3 +403,46 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===== INICIALIZAR TUDO =====
     init();
 });
+
+// ===== CARROSSEL AUTOMÁTICO SIMPLES =====
+function initAutoCarrossel() {
+    const carrossel = document.getElementById('carrossel');
+    const slides = document.querySelectorAll('.carrossel-slide');
+    const indicators = document.querySelectorAll('.carrossel-indicator');
+    
+    if (!carrossel || slides.length === 0) return;
+    
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+    
+    // Função para atualizar o carrossel
+    function updateCarrossel() {
+        // Move o carrossel
+        carrossel.style.transform = `translateX(-${currentSlide * 100}%)`;
+        
+    }
+    
+    // Auto-rotacionar
+    let autoRotateInterval;
+    
+    function startAutoRotate() {
+        autoRotateInterval = setInterval(() => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateCarrossel();
+        }, 4000); // Troca a cada 4 segundos
+    }
+    
+    function stopAutoRotate() {
+        clearInterval(autoRotateInterval);
+    }
+    
+    // Pausa quando o mouse está sobre o carrossel
+    carrossel.addEventListener('mouseenter', stopAutoRotate);
+    carrossel.addEventListener('mouseleave', startAutoRotate);
+    
+    // Inicia
+    updateCarrossel();
+    startAutoRotate();
+}
+
+document.addEventListener('DOMContentLoaded', initAutoCarrossel);
