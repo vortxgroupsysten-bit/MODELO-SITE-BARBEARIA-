@@ -552,7 +552,93 @@
         <div class="spinner"></div>
     </div>
 
-    <script type="module" src="script.js"></script>
+<!-- BANCO DE DADOS -->
+    <!-- tentei no scrip nao deu certo e como quero ver se esta funcionando vou jogar aqui primeiro -->
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+
+
+    // fire base
+const firebaseConfig = {
+  apiKey: "AIzaSyB-DXtImwjO8jNZwcwHKDChAdeJxWt3m5s",
+  authDomain: "modelobarbearia-bb7dd.firebaseapp.com",
+  projectId: "modelobarbearia-bb7dd",
+  storageBucket: "modelobarbearia-bb7dd.firebasestorage.app",
+  messagingSenderId: "705454673409",
+  appId: "1:705454673409:web:f623a107cfae7d4e437a00"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+
+//agenda
+const form = document.getElementById("form-agendamento");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const nome = document.getElementById("nome").value.trim();
+  const telefone = document.getElementById("telefone").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const servico = document.getElementById("servico").value;
+  const barbeiro = document.getElementById("barbeiro").value;
+  const data = document.getElementById("data").value;
+  const horario = document.getElementById("horario").value;
+  const mensagem = document.getElementById("mensagem").value.trim();
+
+  if (!nome || !telefone || !servico || !barbeiro || !data || !horario) {
+    alert("Preencha todos os campos obrigatórios");
+    return;
+  }
+
+  try {
+
+
+      // tentei colocar para bloquear hoarios marcados 
+    const conflito = await db
+      .collection("agendamentos")
+      .where("data", "==", data)
+      .where("horario", "==", horario)
+      .where("barbeiro", "==", barbeiro)
+      .get();
+
+    if (!conflito.empty) {
+      alert("❌ Esse horário já está agendado para esse barbeiro!");
+      return;
+    }
+
+    //salva no banco
+      
+    await db.collection("agendamentos").add({
+      nome,
+      telefone,
+      email: email || null,
+      servico,
+      barbeiro,
+      data,
+      horario,
+      mensagem: mensagem || null,
+      status: "agendado",
+      criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    alert("✅ Agendamento realizado com sucesso!");
+    form.reset();
+
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao salvar agendamento");
+  }
+});
+</script>
+
+    
+    <script src="script.js"></script>
 </body>
 </html>
+
 
