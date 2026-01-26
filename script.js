@@ -446,3 +446,68 @@ function initAutoCarrossel() {
 }
 
 document.addEventListener('DOMContentLoaded', initAutoCarrossel);
+
+// BANCO DE NOVO POR QUE NÃO ACHEI NO HTML 
+//SECOND TESTE BANCO VINCULADO A CONTA VORTX
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  query, 
+  where, 
+  getDocs, 
+  Timestamp 
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB-DXtImwjO8jNZwcwHKDChAdeJxWt3m5s",
+  authDomain: "modelobarbearia-bb7dd.firebaseapp.com",
+  projectId: "modelobarbearia-bb7dd",
+  storageBucket: "modelobarbearia-bb7dd.firebasestorage.app",
+  messagingSenderId: "705454673409",
+  appId: "1:705454673409:web:f623a107cfae7d4e437a00"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const form = document.getElementById("form-agendamento");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const data = document.getElementById("data").value;
+  const hora = document.getElementById("hora").value;
+  const barbeiro = document.getElementById("barbeiro").value;
+
+  const q = query(
+    collection(db, "agendamentos"),
+    where("data", "==", data),
+    where("hora", "==", hora),
+    where("barbeiro", "==", barbeiro)
+  );
+
+  const snap = await getDocs(q);
+  if (!snap.empty) {
+    alert("❌ Esse horário já está ocupado");
+    return;
+  }
+
+  await addDoc(collection(db, "agendamentos"), {
+    nome: nome.value,
+    telefone: telefone.value,
+    servico: servico.value,
+    data,
+    hora,
+    barbeiro,
+    status: "pendente",
+    criadoEm: Timestamp.now()
+  });
+
+  alert("✅ Agendamento feito");
+  form.reset();
+});
+
+
