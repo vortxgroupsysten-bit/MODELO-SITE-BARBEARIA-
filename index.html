@@ -559,9 +559,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-
-
-    // fire base
+// Inicializa Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyB-DXtImwjO8jNZwcwHKDChAdeJxWt3m5s",
   authDomain: "modelobarbearia-bb7dd.firebaseapp.com",
@@ -571,15 +569,21 @@ const firebaseConfig = {
   appId: "1:705454673409:web:f623a107cfae7d4e437a00"
 };
 
-firebase.initializeApp(firebaseConfig);
+// Verifica se Firebase já foi inicializado
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 const db = firebase.firestore();
 
-
-//agenda
+// Agendamento
 const form = document.getElementById("form-agendamento");
 
 form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+  e.preventDefault(); // Impede o envio padrão do formulário
+  
+  // Mostra loading
+  const loading = document.getElementById("loading");
+  loading.style.display = 'flex';
 
   const nome = document.getElementById("nome").value.trim();
   const telefone = document.getElementById("telefone").value.trim();
@@ -587,51 +591,77 @@ form.addEventListener("submit", async (e) => {
   const servico = document.getElementById("servico").value;
   const barbeiro = document.getElementById("barbeiro").value;
   const data = document.getElementById("data").value;
-  const horario = document.getElementById("horario").value;
+  const hora = document.getElementById("hora").value; // CORREÇÃO: mudado de "horario" para "hora"
   const mensagem = document.getElementById("mensagem").value.trim();
 
-  if (!nome || !telefone || !servico || !barbeiro || !data || !horario) {
-    alert("Preencha todos os campos obrigatórios");
+  // Validação básica
+  if (!nome || !telefone || !servico || !barbeiro || !data || !hora) {
+    loading.style.display = 'none';
+    alert("❌ Por favor, preencha todos os campos obrigatórios!");
     return;
   }
 
   try {
-
-
-      // tentei colocar para bloquear hoarios marcados 
+    // Verifica se já existe agendamento no mesmo horário
     const conflito = await db
       .collection("agendamentos")
       .where("data", "==", data)
-      .where("horario", "==", horario)
+      .where("hora", "==", hora) // CORREÇÃO: mudado de "horario" para "hora"
       .where("barbeiro", "==", barbeiro)
       .get();
 
     if (!conflito.empty) {
-      alert("❌ Esse horário já está agendado para esse barbeiro!");
+      loading.style.display = 'none';
+      alert("❌ Este horário já está agendado para o barbeiro selecionado!");
       return;
     }
 
-    //salva no banco
-      
+    // Salva no banco de dados
     await db.collection("agendamentos").add({
       nome,
       telefone,
-      email: email || null,
+      email: email || "",
       servico,
       barbeiro,
       data,
-      horario,
-      mensagem: mensagem || null,
+      hora, // CORREÇÃO: mudado de "horario" para "hora"
+      mensagem: mensagem || "",
       status: "agendado",
       criadoEm: firebase.firestore.FieldValue.serverTimestamp()
     });
 
-    alert("✅ Agendamento realizado com sucesso!");
+    // Esconde loading
+    loading.style.display = 'none';
+    
+    // Mostra modal de confirmação
+    const modal = document.getElementById("modal-confirmacao");
+    modal.style.display = 'flex';
+    
+    // Limpa formulário
     form.reset();
+    
+    // Fecha modal após 3 segundos
+    setTimeout(() => {
+      modal.style.display = 'none';
+    }, 3000);
 
   } catch (err) {
-    console.error(err);
-    alert("Erro ao salvar agendamento");
+    console.error("Erro ao salvar agendamento:", err);
+    loading.style.display = 'none';
+    alert("❌ Erro ao realizar agendamento. Tente novamente.");
+  }
+});
+
+// Fecha modal quando clicar no botão OK
+document.querySelector('.btn-modal').addEventListener('click', () => {
+  document.getElementById('modal-confirmacao').style.display = 'none';
+});
+
+// Fecha modal quando clicar fora dele
+window.addEventListener('click', (e) => {
+  const modal = document.getElementById('modal-confirmacao');
+  if (e.target === modal) {
+    modal.style.display = 'none';
   }
 });
 </script>
@@ -640,5 +670,6 @@ form.addEventListener("submit", async (e) => {
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
