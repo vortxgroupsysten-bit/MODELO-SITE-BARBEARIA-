@@ -759,4 +759,3 @@ footer { background-color: var(--secondary-color); color: white; padding: 70px 0
     70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
     100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
 }
-
