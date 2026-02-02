@@ -1,513 +1,326 @@
-// Aguarda o carregamento completo do DOM
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Barbearia Vintage - Site carregado');
-    
-    // ===== VARIÁVEIS GLOBAIS =====
+    // Referências aos elementos
+    const scheduleBtns = document.querySelectorAll('.js-open-schedule');
+    const scheduleModal = document.getElementById('schedule-modal');
+    const closeScheduleBtn = document.getElementById('close-schedule');
+    const formAgendamento = document.getElementById('form-agendamento');
+    const loadingSpinner = document.getElementById('loading');
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.querySelector('.nav-links');
-    const navLinksItems = document.querySelectorAll('.nav-link');
-    const formAgendamento = document.getElementById('form-agendamento');
-    const modal = document.getElementById('modal-confirmacao');
-    const closeModal = document.querySelector('.close-modal');
-    const btnModal = document.querySelector('.btn-modal');
-    const btnWhatsapp = document.getElementById('btn-whatsapp');
-    const loadingSpinner = document.getElementById('loading');
-    const currentYear = document.getElementById('current-year');
-    const btnAgendarHeader = document.getElementById('btn-agendar-header');
-    const btnServicos = document.querySelectorAll('.btn-servico');
-    const formNewsletter = document.getElementById('form-newsletter');
-    
-    // ===== FUNÇÕES DE INICIALIZAÇÃO =====
-    function init() {
-        // Definir ano atual no footer
-        if (currentYear) {
-            currentYear.textContent = new Date().getFullYear();
-        }
-        
-        // Configurar data mínima para agendamento (amanhã)
-        setupDateInput();
-        
-        // Configurar máscara de telefone
-        setupPhoneMask();
-        
-        // Ativar menu ativo baseado na rolagem
-        setupScrollSpy();
-        
-        // Adicionar listeners
-        addEventListeners();
-        
-        // Inicializar animações
-        initAnimations();
-    }
-    
-    // ===== CONFIGURAÇÃO DE INPUTS =====
-    function setupDateInput() {
-        const dataInput = document.getElementById('data');
-        if (dataInput) {
-            const hoje = new Date();
-            const amanha = new Date(hoje);
-            amanha.setDate(amanha.getDate() + 1);
-            
-            // Formatar para YYYY-MM-DD
-            const hojeFormatado = hoje.toISOString().split('T')[0];
-            const amanhaFormatado = amanha.toISOString().split('T')[0];
-            
-            dataInput.min = hojeFormatado;
-            dataInput.value = amanhaFormatado;
-        }
-    }
-    
-    function setupPhoneMask() {
-        const telefoneInput = document.getElementById('telefone');
-        if (telefoneInput) {
-            telefoneInput.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\D/g, '');
-                
-                if (value.length > 11) {
-                    value = value.substring(0, 11);
-                }
-                
-                // Formatar como (XX) XXXXX-XXXX ou (XX) XXXX-XXXX
-                if (value.length > 10) {
-                    value = value.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
-                } else if (value.length > 6) {
-                    value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
-                } else if (value.length > 2) {
-                    value = value.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
-                } else if (value.length > 0) {
-                    value = value.replace(/^(\d*)/, '($1');
-                }
-                
-                e.target.value = value;
-            });
-        }
-    }
-    
-    // ===== MENU MOBILE =====
-    function toggleMobileMenu() {
-        if (hamburger && navLinks) {
-            hamburger.classList.toggle('active');
-            navLinks.classList.toggle('active');
-            
-            // Bloquear scroll quando menu está aberto
-            if (navLinks.classList.contains('active')) {
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = '';
-            }
-        }
-    }
-    
-    function closeMobileMenu() {
-        if (hamburger && navLinks) {
-            hamburger.classList.remove('active');
-            navLinks.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    }
-    
-    // ===== SCROLL SPY PARA MENU ATIVO =====
-    function setupScrollSpy() {
-        const sections = document.querySelectorAll('section[id]');
-        
-        function onScroll() {
-            const scrollY = window.pageYOffset;
-            
-            sections.forEach(section => {
-                const sectionHeight = section.offsetHeight;
-                const sectionTop = section.offsetTop - 100;
-                const sectionId = section.getAttribute('id');
-                const navLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
-                
-                if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-                    if (navLink) {
-                        navLink.classList.add('active');
-                    }
-                } else {
-                    if (navLink) {
-                        navLink.classList.remove('active');
-                    }
-                }
-            });
-        }
-        
-        window.addEventListener('scroll', onScroll);
-        
-        // Executar uma vez para definir estado inicial
-        onScroll();
-    }
-    
-    // ===== ANIMAÇÕES =====
-    function initAnimations() {
-        // Animar elementos ao rolar
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
-                }
-            });
-        }, observerOptions);
-        
-        // Observar elementos para animação
-        const elementsToAnimate = document.querySelectorAll('.servico-card, .sobre-imagem, .info-card, .galeria-item');
-        elementsToAnimate.forEach(el => observer.observe(el));
-    }
-    
-    // ===== FUNÇÃO AUXILIAR PARA VALIDAR E-MAIL =====
-    function isValidEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email);
-    }
-    
-    // ===== FORMULÁRIO DE AGENDAMENTO =====
-    function handleAgendamentoSubmit(e) {
-        e.preventDefault();
-        
-        // Coletar dados do formulário
-        const nome = document.getElementById('nome').value;
-        const telefone = document.getElementById('telefone').value;
-        const email = document.getElementById('email').value; // Agora opcional
-        const servico = document.getElementById('servico').value;
-        const data = document.getElementById('data').value;
-        const hora = document.getElementById('hora').value;
-        const barbeiro = document.getElementById('barbeiro').value;
-        const preferencia = document.getElementById('preferencia').value;
-        const mensagem = document.getElementById('mensagem').value;
-        
-        // Validação básica (apenas campos obrigatórios)
-        if (!nome || !telefone || !servico || !data || !hora || !barbeiro) {
-            alert('Por favor, preencha todos os campos obrigatórios.');
-            return;
-        }
-        
-        // Validação de e-mail se fornecido
-        if (email && !isValidEmail(email)) {
-            alert('Por favor, insira um e-mail válido ou deixe o campo em branco.');
-            return;
-        }
-        
-        // Mostrar loading
-        if (loadingSpinner) {
-            loadingSpinner.style.display = 'flex';
-        }
-        
-        // Simular processamento (em um caso real, seria uma requisição AJAX)
-        setTimeout(() => {
-            // Esconder loading
-            if (loadingSpinner) {
-                loadingSpinner.style.display = 'none';
-            }
-            
-            // Mostrar modal
-            if (modal) {
-                modal.style.display = 'flex';
-            }
-            
-            // Limpar formulário
-            formAgendamento.reset();
-            
-            // Resetar data para amanhã
-            setupDateInput();
-            
-            // Resetar campos opcionais para valores padrão
-            document.getElementById('preferencia').selectedIndex = 0;
-            
-            // Fechar menu mobile se estiver aberto
-            closeMobileMenu();
-        }, 1500);
-    }
-    
-    // ===== BOTÕES DE SERVIÇOS =====
-    function setupServicoButtons() {
-        btnServicos.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const servico = this.getAttribute('data-servico');
-                
-                // Rolar até o formulário
-                document.getElementById('contato').scrollIntoView({
-                    behavior: 'smooth'
-                });
-                
-                // Preencher o campo de serviço
-                setTimeout(() => {
-                    const servicoSelect = document.getElementById('servico');
-                    if (servicoSelect) {
-                        // Encontrar a opção correspondente
-                        for (let i = 0; i < servicoSelect.options.length; i++) {
-                            if (servicoSelect.options[i].text.includes(servico)) {
-                                servicoSelect.selectedIndex = i;
-                                break;
-                            }
-                        }
-                        
-                        // Dar foco ao formulário
-                        document.getElementById('nome').focus();
-                    }
-                }, 800);
-            });
-        });
-    }
-    
-    // ===== MODAL =====
-    function showModal() {
-        if (modal) {
-            modal.style.display = 'flex';
-        }
-    }
-    
-    function hideModal() {
-        if (modal) {
-            modal.style.display = 'none';
-        }
-    }
-    
-    // ===== FORMULÁRIO NEWSLETTER =====
-    function handleNewsletterSubmit(e) {
-        e.preventDefault();
-        
-        const emailInput = e.target.querySelector('input[type="email"]');
-        
-        if (emailInput && emailInput.value) {
-            // Validar e-mail
-            if (!isValidEmail(emailInput.value)) {
-                alert('Por favor, insira um e-mail válido.');
-                return;
-            }
-            
-            // Simular envio
-            if (loadingSpinner) {
-                loadingSpinner.style.display = 'flex';
-            }
-            
-            setTimeout(() => {
-                if (loadingSpinner) {
-                    loadingSpinner.style.display = 'none';
-                }
-                
-                alert('Obrigado por se inscrever em nossa newsletter! Em breve você receberá nossas ofertas especiais.');
-                emailInput.value = '';
-            }, 1000);
-        }
-    }
-    
-    // ===== ROLAGEM SUAVE =====
-    function setupSmoothScroll() {
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                const href = this.getAttribute('href');
-                
-                if (href === '#') return;
-                
-                const targetElement = document.querySelector(href);
-                
-                if (targetElement) {
-                    e.preventDefault();
-                    
-                    // Calcular posição com offset do header
-                    const headerHeight = document.querySelector('header').offsetHeight;
-                    const targetPosition = targetElement.offsetTop - headerHeight;
-                    
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
-                    
-                    // Fechar menu mobile se estiver aberto
-                    closeMobileMenu();
-                }
-            });
-        });
-    }
-    
-    // ===== BOTÃO AGENDAR HEADER =====
-    function handleAgendarHeaderClick() {
-        document.getElementById('contato').scrollIntoView({
-            behavior: 'smooth'
-        });
-        
-        // Fechar menu mobile se estiver aberto
-        closeMobileMenu();
-    }
-    
-    // ===== EVENT LISTENERS =====
-    function addEventListeners() {
-        // Menu mobile
-        if (hamburger) {
-            hamburger.addEventListener('click', toggleMobileMenu);
-        }
-        
-        // Fechar menu ao clicar em um link
-        navLinksItems.forEach(link => {
-            link.addEventListener('click', closeMobileMenu);
-        });
-        
-        // Formulário de agendamento
-        if (formAgendamento) {
-            formAgendamento.addEventListener('submit', handleAgendamentoSubmit);
-        }
-        
-        // Modal
-        if (btnModal) {
-            btnModal.addEventListener('click', hideModal);
-        }
-        
-        // Fechar modal ao clicar fora
-        window.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                hideModal();
-            }
-        });
-        
-        // Botão agendar no header
-        if (btnAgendarHeader) {
-            btnAgendarHeader.addEventListener('click', handleAgendarHeaderClick);
-        }
-        
-        // Botões de serviços
-        setupServicoButtons();
-        
-        // Formulário newsletter
-        if (formNewsletter) {
-            formNewsletter.addEventListener('submit', handleNewsletterSubmit);
-        }
-        
-        // Rolagem suave
-        setupSmoothScroll();
-        
-        // Fechar menu ao redimensionar a janela (se for maior que mobile)
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 992) {
-                closeMobileMenu();
-            }
-        });
-        
-        // Melhorar performance do scroll
-        let scrollTimeout;
-        window.addEventListener('scroll', function() {
-            if (scrollTimeout) {
-                clearTimeout(scrollTimeout);
-            }
-            
-            scrollTimeout = setTimeout(function() {
-                // Atualizar menu ativo
-                setupScrollSpy();
-            }, 100);
-        });
-    }
-    
-    // ===== INICIALIZAR TUDO =====
-    init();
-});
-
-// ===== CARROSSEL AUTOMÁTICO SIMPLES =====
-function initAutoCarrossel() {
+    const yearSpan = document.getElementById('current-year');
     const carrossel = document.getElementById('carrossel');
     const slides = document.querySelectorAll('.carrossel-slide');
-    const indicators = document.querySelectorAll('.carrossel-indicator');
     
-    if (!carrossel || slides.length === 0) return;
+    // Definir ano atual
+    if(yearSpan) yearSpan.textContent = new Date().getFullYear();
     
-    let currentSlide = 0;
-    const totalSlides = slides.length;
+    // Máscara de Telefone
+    const telefoneInput = document.getElementById('telefone');
+    if (telefoneInput) {
+        telefoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 11) value = value.substring(0, 11);
+            if (value.length > 10) value = value.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+            else if (value.length > 6) value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+            else if (value.length > 2) value = value.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+            e.target.value = value;
+        });
+    }
+
+    // Funções do Modal Principal
+    function openModal() {
+        if(scheduleModal) {
+            scheduleModal.style.display = 'flex';
+            setTimeout(() => { scheduleModal.classList.add('active'); }, 10);
+            document.body.style.overflow = 'hidden';
+            // Render datepicker when modal opens
+            renderDatePicker();
+        }
+    }
+
+    function closeModal() {
+        if(scheduleModal) {
+            scheduleModal.classList.remove('active');
+            setTimeout(() => {
+                scheduleModal.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 300);
+        }
+    }
+
+    // Listeners para abrir modal
+    scheduleBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal();
+            if(navLinks && navLinks.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
+        });
+    });
+
+    // Listeners para fechar modal principal
+    if(closeScheduleBtn) closeScheduleBtn.addEventListener('click', closeModal);
+    if(scheduleModal) {
+        scheduleModal.addEventListener('click', (e) => { 
+            if (e.target === scheduleModal) closeModal(); 
+        });
+    }
+
+    /* ===== LÓGICA DO DATE PICKER E TIME GRID ===== */
+    const dateScroll = document.getElementById('date-scroll');
+    const timeGrid = document.getElementById('time-grid');
+    const inputData = document.getElementById('data');
+    const inputHora = document.getElementById('hora');
+    const timeSelectionTitle = document.getElementById('time-selection-title');
     
-    // Função para atualizar o carrossel
-    function updateCarrossel() {
-        // Move o carrossel
-        carrossel.style.transform = `translateX(-${currentSlide * 100}%)`;
+    // Dias da semana em PT-BR
+    const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+    function renderDatePicker() {
+        if (!dateScroll) return;
+        dateScroll.innerHTML = '';
+        const today = new Date();
         
+        // Gerar próximos 14 dias
+        for (let i = 0; i < 14; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+            
+            const dayName = daysOfWeek[date.getDay()];
+            const dayNumber = String(date.getDate()).padStart(2, '0');
+            const isoDate = date.toISOString().split('T')[0];
+            
+            const card = document.createElement('div');
+            card.className = 'date-card';
+            if (i === 0) card.classList.add('active'); // Seleciona hoje por padrão
+            card.setAttribute('data-date', isoDate);
+            card.setAttribute('data-day', dayNumber);
+            card.setAttribute('data-month', months[date.getMonth()]);
+            
+            card.innerHTML = `
+                <span class="dow">${dayName}</span>
+                <span class="day">${dayNumber}</span>
+            `;
+            
+            card.addEventListener('click', function() {
+                // Remove active class from all
+                document.querySelectorAll('.date-card').forEach(c => c.classList.remove('active'));
+                // Add active to clicked
+                this.classList.add('active');
+                // Update hidden input
+                inputData.value = this.getAttribute('data-date');
+                // Update title
+                updateTimeTitle(this.getAttribute('data-day'), this.getAttribute('data-month'));
+                // Re-render times (simulate availability)
+                renderTimeSlots();
+            });
+            
+            dateScroll.appendChild(card);
+        }
+        
+        // Set initial values
+        const firstCard = dateScroll.querySelector('.date-card');
+        if (firstCard) {
+            inputData.value = firstCard.getAttribute('data-date');
+            updateTimeTitle(firstCard.getAttribute('data-day'), firstCard.getAttribute('data-month'));
+            renderTimeSlots();
+        }
     }
     
-    // Auto-rotacionar
-    let autoRotateInterval;
-    
-    function startAutoRotate() {
-        autoRotateInterval = setInterval(() => {
-            currentSlide = (currentSlide + 1) % totalSlides;
-            updateCarrossel();
-        }, 4000); // Troca a cada 4 segundos
+    function updateTimeTitle(day, month) {
+        if (timeSelectionTitle) {
+            timeSelectionTitle.textContent = `Horários disponíveis no dia ${day} de ${month}`;
+        }
     }
-    
-    function stopAutoRotate() {
-        clearInterval(autoRotateInterval);
+
+    function renderTimeSlots() {
+        if (!timeGrid) return;
+        timeGrid.innerHTML = '';
+        inputHora.value = ''; // Reset selected time
+        
+        // Horários fictícios
+        const times = [
+            '09:00', '09:30', '10:00', 
+            '10:30', '11:00', '11:30',
+            '13:00', '13:30', '14:00',
+            '14:30', '15:00', '15:30',
+            '16:00', '16:30', '18:00',
+            '18:30', '19:00'
+        ];
+        
+        times.forEach(time => {
+            const btn = document.createElement('div');
+            btn.className = 'time-slot';
+            btn.textContent = time;
+            
+            btn.addEventListener('click', function() {
+                // Remove selected from all
+                document.querySelectorAll('.time-slot').forEach(t => t.classList.remove('selected'));
+                // Select clicked
+                this.classList.add('selected');
+                // Update hidden input
+                inputHora.value = time;
+            });
+            
+            timeGrid.appendChild(btn);
+        });
     }
-    
-    // Pausa quando o mouse está sobre o carrossel
-    carrossel.addEventListener('mouseenter', stopAutoRotate);
-    carrossel.addEventListener('mouseleave', startAutoRotate);
-    
-    // Inicia
-    updateCarrossel();
-    startAutoRotate();
-}
 
-document.addEventListener('DOMContentLoaded', initAutoCarrossel);
 
-// BANCO DE NOVO POR QUE NÃO ACHEI NO HTML 
-//SECOND TESTE BANCO VINCULADO A CONTA VORTX
+    /* ===== LÓGICA DOS NOVOS SELETORES (Serviço e Barbeiro) ===== */
+    const btnSelectServico = document.getElementById('btn-select-servico');
+    const btnSelectBarbeiro = document.getElementById('btn-select-barbeiro');
+    const modalServicos = document.getElementById('modal-servicos');
+    const modalBarbeiros = document.getElementById('modal-barbeiros');
+    const inputServico = document.getElementById('servico');
+    const inputBarbeiro = document.getElementById('barbeiro');
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { 
-  getFirestore, 
-  collection, 
-  addDoc, 
-  query, 
-  where, 
-  getDocs, 
-  Timestamp 
-} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+    // Abrir Modais de Seleção
+    if(btnSelectServico) {
+        btnSelectServico.addEventListener('click', () => {
+            modalServicos.style.display = 'flex';
+            setTimeout(() => { modalServicos.classList.add('active'); }, 10);
+        });
+    }
 
-const firebaseConfig = {
-  apiKey: "AIzaSyB-DXtImwjO8jNZwcwHKDChAdeJxWt3m5s",
-  authDomain: "modelobarbearia-bb7dd.firebaseapp.com",
-  projectId: "modelobarbearia-bb7dd",
-  storageBucket: "modelobarbearia-bb7dd.firebasestorage.app",
-  messagingSenderId: "705454673409",
-  appId: "1:705454673409:web:f623a107cfae7d4e437a00"
-};
+    if(btnSelectBarbeiro) {
+        btnSelectBarbeiro.addEventListener('click', () => {
+            modalBarbeiros.style.display = 'flex';
+            setTimeout(() => { modalBarbeiros.classList.add('active'); }, 10);
+        });
+    }
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    // Fechar Modais de Seleção
+    function closeSelectionModal(modal) {
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
 
-const form = document.getElementById("form-agendamento");
+    document.querySelectorAll('.close-selection').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const targetId = btn.getAttribute('data-target');
+            closeSelectionModal(document.getElementById(targetId));
+        });
+    });
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+    // Fechar ao clicar fora
+    [modalServicos, modalBarbeiros].forEach(modal => {
+        if(modal) {
+            modal.addEventListener('click', (e) => {
+                if(e.target === modal) closeSelectionModal(modal);
+            });
+        }
+    });
 
-  const data = document.getElementById("data").value;
-  const hora = document.getElementById("hora").value;
-  const barbeiro = document.getElementById("barbeiro").value;
+    // Seleção de Opções
+    document.querySelectorAll('.option-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const value = this.getAttribute('data-value');
+            const isService = this.closest('#modal-servicos') !== null;
+            
+            // Remove seleção anterior no mesmo grupo
+            const parentGrid = this.parentElement;
+            parentGrid.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+            
+            // Adiciona seleção atual
+            this.classList.add('selected');
+            
+            // Atualiza input e texto do botão
+            if(isService) {
+                inputServico.value = value;
+                const price = this.getAttribute('data-price');
+                btnSelectServico.querySelector('span').innerHTML = `<b>${value}</b> - ${price}`;
+                btnSelectServico.classList.add('active');
+                closeSelectionModal(modalServicos);
+            } else {
+                inputBarbeiro.value = value;
+                btnSelectBarbeiro.querySelector('span').innerHTML = `<b>${value}</b>`;
+                btnSelectBarbeiro.classList.add('active');
+                closeSelectionModal(modalBarbeiros);
+            }
+        });
+    });
 
-  const q = query(
-    collection(db, "agendamentos"),
-    where("data", "==", data),
-    where("hora", "==", hora),
-    where("barbeiro", "==", barbeiro)
-  );
+    // Envio do Formulário Atualizado
+    if(formAgendamento) {
+        formAgendamento.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validação manual dos inputs hidden
+            if(!inputServico.value) {
+                alert("Por favor, selecione um serviço.");
+                btnSelectServico.click(); 
+                return;
+            }
+            if(!inputData.value) {
+                alert("Por favor, selecione uma data.");
+                return;
+            }
+            if(!inputHora.value) {
+                alert("Por favor, selecione um horário.");
+                return;
+            }
+            if(!inputBarbeiro.value) {
+                alert("Por favor, selecione um barbeiro.");
+                btnSelectBarbeiro.click();
+                return;
+            }
 
-  const snap = await getDocs(q);
-  if (!snap.empty) {
-    alert("❌ Esse horário já está ocupado");
-    return;
-  }
+            const agendamento = {
+                nome: document.getElementById('nome').value,
+                servico: inputServico.value,
+                data: inputData.value,
+                hora: inputHora.value,
+                barbeiro: inputBarbeiro.value,
+                id: Date.now()
+            };
+            
+            let agendamentos = JSON.parse(localStorage.getItem('meusAgendamentos') || '[]');
+            agendamentos.push(agendamento);
+            localStorage.setItem('meusAgendamentos', JSON.stringify(agendamentos));
+            
+            if(loadingSpinner) loadingSpinner.style.display = 'flex';
+            
+            setTimeout(() => { 
+                if(loadingSpinner) loadingSpinner.style.display = 'none';
+                
+                // Show success message
+                const formContainer = document.querySelector('.form-container');
+                if(formContainer) {
+                    formContainer.innerHTML = `
+                        <div style="text-align: center; padding: 40px 20px;">
+                            <div style="width: 80px; height: 80px; background: #d4af37; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 40px;">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <h3 style="color: #1a1a1a; margin-bottom: 10px;">Agendamento Confirmado!</h3>
+                            <p style="color: #6c757d;">Te esperamos no dia e horário marcados.</p>
+                            <button class="btn-form" style="margin-top: 20px;" onclick="location.reload()">Novo Agendamento</button>
+                        </div>
+                    `;
+                }
+            }, 1500);
+        });
+    }
 
-  await addDoc(collection(db, "agendamentos"), {
-    nome: nome.value,
-    telefone: telefone.value,
-    servico: servico.value,
-    data,
-    hora,
-    barbeiro,
-    status: "pendente",
-    criadoEm: Timestamp.now()
-  });
+    // Menu Mobile
+    if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+    }
 
-  alert("✅ Agendamento feito");
-  form.reset();
+    // Carrossel Automático
+    if (carrossel && slides.length > 0) {
+        let currentSlide = 0;
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            carrossel.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }, 4000);
+    }
 });
-
-
