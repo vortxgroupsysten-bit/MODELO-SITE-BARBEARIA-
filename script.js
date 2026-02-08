@@ -19,25 +19,37 @@ document.addEventListener('DOMContentLoaded', function() {
     const scheduleBtns = document.querySelectorAll('.js-open-schedule');
     const closeScheduleBtn = document.getElementById('close-schedule');
     const formAgendamento = document.getElementById('form-agendamento');
+    const loadingSpinner = document.getElementById('loading');
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.querySelector('.nav-links');
     
-    // Inputs de dados
+    // Inputs de dados (Hidden inputs no HTML)
     const inputServico = document.getElementById('servico');
     const inputBarbeiro = document.getElementById('barbeiro');
-    const inputDataValue = document.getElementById('data'); // mudei o nome da var para não conflitar
-    const inputHoraValue = document.getElementById('hora'); // mudei o nome da var para não conflitar
+    const inputData = document.getElementById('data');
+    const inputHora = document.getElementById('hora');
 
-    // FUNÇÃO PARA ABRIR O MODAL (Adicione este console.log para testar)
+    /* ===== FUNÇÕES DO MODAL PRINCIPAL ===== */
     function openModal() {
-        console.log("Tentando abrir o modal..."); // Se isso aparecer no F12, o JS está lendo
         if(scheduleModal) {
             scheduleModal.style.display = 'flex';
             setTimeout(() => { scheduleModal.classList.add('active'); }, 10);
             document.body.style.overflow = 'hidden';
-            renderDatePicker();
+            renderDatePicker(); // Inicia o calendário ao abrir
         }
     }
 
-    // Atribuindo o clique aos botões "Agendar Agora"
+    function closeModal() {
+        if(scheduleModal) {
+            scheduleModal.classList.remove('active');
+            setTimeout(() => {
+                scheduleModal.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 300);
+        }
+    }
+
+    // Eventos para abrir/fechar modal
     scheduleBtns.forEach(btn => {
         btn.onclick = (e) => {
             e.preventDefault();
@@ -45,34 +57,11 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     });
 
-    // Fechar modal
-    if(closeScheduleBtn) {
-        closeScheduleBtn.onclick = () => {
-            scheduleModal.classList.remove('active');
-            setTimeout(() => {
-                scheduleModal.style.display = 'none';
-                document.body.style.overflow = '';
-            }, 300);
-        };
-    }
-
-    scheduleBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            openModal();
-            if(navLinks && navLinks.classList.contains('active')) {
-                hamburger.classList.remove('active');
-                navLinks.classList.remove('active');
-            }
-        });
-    });
-
-    if(closeScheduleBtn) closeScheduleBtn.addEventListener('click', closeModal);
-    if(scheduleModal) {
-        scheduleModal.addEventListener('click', (e) => { 
-            if (e.target === scheduleModal) closeModal(); 
-        });
-    }
+    if(closeScheduleBtn) closeScheduleBtn.onclick = closeModal;
+    
+    window.onclick = (e) => {
+        if (e.target === scheduleModal) closeModal();
+    };
 
     /* ===== DATE PICKER E TIME GRID ===== */
     const dateScroll = document.getElementById('date-scroll');
@@ -85,28 +74,36 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!dateScroll) return;
         dateScroll.innerHTML = '';
         const today = new Date();
+        
         for (let i = 0; i < 14; i++) {
             const date = new Date(today);
             date.setDate(today.getDate() + i);
+            
             const dayName = daysOfWeek[date.getDay()];
             const dayNumber = String(date.getDate()).padStart(2, '0');
             const isoDate = date.toISOString().split('T')[0];
+            
             const card = document.createElement('div');
             card.className = 'date-card';
             if (i === 0) card.classList.add('active');
+            
             card.setAttribute('data-date', isoDate);
             card.setAttribute('data-day', dayNumber);
             card.setAttribute('data-month', months[date.getMonth()]);
+            
             card.innerHTML = `<span class="dow">${dayName}</span><span class="day">${dayNumber}</span>`;
-            card.addEventListener('click', function() {
+            
+            card.onclick = function() {
                 document.querySelectorAll('.date-card').forEach(c => c.classList.remove('active'));
                 this.classList.add('active');
                 inputData.value = this.getAttribute('data-date');
                 updateTimeTitle(this.getAttribute('data-day'), this.getAttribute('data-month'));
                 renderTimeSlots();
-            });
+            };
             dateScroll.appendChild(card);
         }
+        
+        // Seleção inicial
         const firstCard = dateScroll.querySelector('.date-card');
         if (firstCard) {
             inputData.value = firstCard.getAttribute('data-date');
@@ -124,37 +121,29 @@ document.addEventListener('DOMContentLoaded', function() {
         timeGrid.innerHTML = '';
         inputHora.value = '';
         const times = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '18:00', '18:30', '19:00'];
+        
         times.forEach(time => {
             const btn = document.createElement('div');
             btn.className = 'time-slot';
             btn.textContent = time;
-            btn.addEventListener('click', function() {
+            btn.onclick = function() {
                 document.querySelectorAll('.time-slot').forEach(t => t.classList.remove('selected'));
                 this.classList.add('selected');
                 inputHora.value = time;
-            });
+            };
             timeGrid.appendChild(btn);
         });
     }
 
-    /* ===== SELETORES (Serviço e Barbeiro) ===== */
+    /* ===== SELETORES DE SERVIÇO E BARBEIRO ===== */
     const btnSelectServico = document.getElementById('btn-select-servico');
     const btnSelectBarbeiro = document.getElementById('btn-select-barbeiro');
     const modalServicos = document.getElementById('modal-servicos');
     const modalBarbeiros = document.getElementById('modal-barbeiros');
 
-    if(btnSelectServico) {
-        btnSelectServico.addEventListener('click', () => {
-            modalServicos.style.display = 'flex';
-            setTimeout(() => { modalServicos.classList.add('active'); }, 10);
-        });
-    }
-
-    if(btnSelectBarbeiro) {
-        btnSelectBarbeiro.addEventListener('click', () => {
-            modalBarbeiros.style.display = 'flex';
-            setTimeout(() => { modalBarbeiros.classList.add('active'); }, 10);
-        });
+    function openSelectionModal(modal) {
+        modal.style.display = 'flex';
+        setTimeout(() => { modal.classList.add('active'); }, 10);
     }
 
     function closeSelectionModal(modal) {
@@ -162,23 +151,27 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => { modal.style.display = 'none'; }, 300);
     }
 
+    if(btnSelectServico) btnSelectServico.onclick = () => openSelectionModal(modalServicos);
+    if(btnSelectBarbeiro) btnSelectBarbeiro.onclick = () => openSelectionModal(modalBarbeiros);
+
     document.querySelectorAll('.close-selection').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.onclick = () => {
             const targetId = btn.getAttribute('data-target');
             closeSelectionModal(document.getElementById(targetId));
-        });
+        };
     });
 
     document.querySelectorAll('.option-card').forEach(card => {
-        card.addEventListener('click', function() {
+        card.onclick = function() {
             const value = this.getAttribute('data-value');
             const isService = this.closest('#modal-servicos') !== null;
+            
             this.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
             this.classList.add('selected');
             
             if(isService) {
                 inputServico.value = value;
-                btnSelectServico.querySelector('span').innerHTML = `<b>${value}</b> - ${this.getAttribute('data-price')}`;
+                btnSelectServico.querySelector('span').innerHTML = `<b>${value}</b> - ${this.getAttribute('data-price') || ''}`;
                 btnSelectServico.classList.add('active');
                 closeSelectionModal(modalServicos);
             } else {
@@ -187,17 +180,63 @@ document.addEventListener('DOMContentLoaded', function() {
                 btnSelectBarbeiro.classList.add('active');
                 closeSelectionModal(modalBarbeiros);
             }
-        });
+        };
     });
 
-    // Menu Mobile e Carrossel
-    if (hamburger && navLinks) {
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navLinks.classList.toggle('active');
-        });
+    /* ===== ENVIO DO FORMULÁRIO (FIREBASE) ===== */
+    if(formAgendamento) {
+        formAgendamento.onsubmit = async function(e) {
+            e.preventDefault();
+            
+            if(!inputServico.value || !inputData.value || !inputHora.value || !inputBarbeiro.value) {
+                alert("Por favor, selecione todos os campos (Serviço, Barbeiro, Data e Hora).");
+                return;
+            }
+
+            if(loadingSpinner) loadingSpinner.style.display = 'flex';
+
+            const agendamento = {
+                nomeCliente: document.getElementById('nome').value,
+                telefone: document.getElementById('telefone').value,
+                servico: inputServico.value,
+                nomeBarbeiro: inputBarbeiro.value,
+                data: `${inputData.value}T${inputHora.value}`,
+                status: "pendente",
+                criadoEm: new Date().toISOString()
+            };
+
+            try {
+                await addDoc(collection(db, "agendamentos"), agendamento);
+                if(loadingSpinner) loadingSpinner.style.display = 'none';
+
+                const formContainer = document.querySelector('.form-container');
+                formContainer.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <div style="width: 80px; height: 80px; background: #d4af37; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 40px;">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <h3>Confirmado!</h3>
+                        <p>O barbeiro <b>${agendamento.nomeBarbeiro}</b> recebeu seu pedido.</p>
+                        <button class="btn-form" onclick="location.reload()">Novo Agendamento</button>
+                    </div>`;
+            } catch (error) {
+                console.error("Erro Firebase:", error);
+                alert("Erro ao salvar agendamento.");
+                if(loadingSpinner) loadingSpinner.style.display = 'none';
+            }
+        };
     }
 
+    /* ===== MENU MOBILE E CARROSSEL ===== */
+    if (hamburger && navLinks) {
+        hamburger.onclick = () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        };
+    }
+
+    const carrossel = document.getElementById('carrossel');
+    const slides = document.querySelectorAll('.carrossel-slide');
     if (carrossel && slides.length > 0) {
         let currentSlide = 0;
         setInterval(() => {
